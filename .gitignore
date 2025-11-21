@@ -1,0 +1,76 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment
+.env
+.env.local
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+tests/generated/**/*.py
+test-results/
+playwright-report/
+screenshots/
+videos/
+
+# Vector Store
+knowledge_base/vector_store/
+*.faiss
+*.pkl
+
+# Logs
+logs/
+*.log
+
+# CI/CD
+.azure/
+.github/workflows/temp/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Oracle
+tnsnames.ora
+sqlnet.ora
+
+# Windows reserved files
+nul

@@ -1,0 +1,42 @@
+{
+  "id": "APPROVAL-TEST-001",
+  "approval_type": "test_plan",
+  "item_id": "PLAN-SAMPLE-001",
+  "item_data": {
+    "tests": [
+      {
+        "name": "test_login_valid_credentials",
+        "description": "Verify user can login with valid credentials",
+        "priority": "high"
+      },
+      {
+        "name": "test_login_invalid_credentials",
+        "description": "Verify login fails with invalid credentials",
+        "priority": "high"
+      },
+      {
+        "name": "test_logout",
+        "description": "Verify user can logout successfully",
+        "priority": "medium"
+      }
+    ],
+    "total_tests": 3,
+    "estimated_duration": "5 minutes"
+  },
+  "item_summary": "Test plan for login functionality with 3 test cases",
+  "status": "approved",
+  "approved_by": "Test User",
+  "approved_at": "2025-11-17 16:41:29.899142",
+  "rejection_reason": null,
+  "modifications": null,
+  "modified_item": null,
+  "feedback": null,
+  "comments": "Looks good!",
+  "requested_at": "2025-11-17 16:40:00",
+  "timeout_seconds": 3600,
+  "expires_at": null,
+  "context": {
+    "app_name": "Sample Web Application",
+    "feature": "User Authentication"
+  }
+}

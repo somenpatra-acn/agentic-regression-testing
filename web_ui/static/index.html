@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HITL Web Interface - Regression Testing Framework</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Highlight.js for code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <h1><i class="fas fa-robot"></i> HITL Web Interface</h1>
+            <span class="subtitle">Agentic Regression Testing Framework</span>
+        </div>
+        <div class="header-right">
+            <div class="status-indicator" id="connection-status">
+                <i class="fas fa-circle"></i>
+                <span>Connecting...</span>
+            </div>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span id="user-name">Web UI User</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-item active" data-view="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#approvals" class="nav-item" data-view="approvals">
+                    <i class="fas fa-tasks"></i>
+                    <span>Approvals</span>
+                    <span class="badge" id="pending-count">0</span>
+                </a>
+                <a href="#workflow" class="nav-item" data-view="workflow">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Workflow Monitor</span>
+                </a>
+                <a href="#chat" class="nav-item" data-view="chat">
+                    <i class="fas fa-comments"></i>
+                    <span>Chat</span>
+                </a>
+                <a href="#feedback" class="nav-item" data-view="feedback">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>Feedback</span>
+                </a>
+                <a href="#config" class="nav-item" data-view="config">
+                    <i class="fas fa-cog"></i>
+                    <span>Configuration</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content">
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="view active">
+                <h2>Dashboard</h2>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon pending">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-pending">0</h3>
+                            <p>Pending Approvals</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon approved">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-approved">0</h3>
+                            <p>Approved</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon rejected">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-rejected">0</h3>
+                            <p>Rejected</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon workflow">
+                            <i class="fas fa-spinner"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-workflow">Idle</h3>
+                            <p>Workflow Status</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>Workflow Progress</h3>
+                        <div id="workflow-progress"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Recent Activity</h3>
+                        <div id="recent-activity" class="activity-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approvals View -->
+            <div id="approvals-view" class="view">
+                <h2>Pending Approvals</h2>
+
+                <div id="approvals-list" class="approvals-list">
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <p>No pending approvals</p>
+                    </div>
+                </div>
+
+                <!-- Approval Detail Modal -->
+                <div id="approval-modal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="modal-title">Approval Details</h3>
+                            <button class="modal-close" onclick="closeApprovalModal()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="modal-body">
+                            <!-- Approval details loaded here -->
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-success" onclick="approveItem()">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button class="btn btn-warning" onclick="showModifyForm()">
+                                <i class="fas fa-edit"></i> Modify & Approve
+                            </button>
+                            <button class="btn btn-danger" onclick="showRejectForm()">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow Monitor View -->
+            <div id="workflow-view" class="view">
+                <h2>Workflow Monitor</h2>
+
+                <div class="workflow-header">
+                    <div class="workflow-info">
+                        <p><strong>Application:</strong> <span id="workflow-app">N/A</span></p>
+                        <p><strong>Feature:</strong> <span id="workflow-feature">N/A</span></p>
+                        <p><strong>Status:</strong> <span id="workflow-status-text">Idle</span></p>
+                        <p><strong>Elapsed Time:</strong> <span id="workflow-elapsed">0s</span></p>
+                    </div>
+                    <button class="btn btn-primary" onclick="resetWorkflow()">
+                        <i class="fas fa-redo"></i> Reset Workflow
+                    </button>
+                </div>
+
+                <div class="stages-timeline" id="stages-timeline">
+                    <!-- Stages loaded here -->
+                </div>
+
+                <div class="stages-details" id="stages-details">
+                    <!-- Stage details loaded here -->
+                </div>
+            </div>
+
+            <!-- Chat View -->
+            <div id="chat-view" class="view">
+                <h2>Chat with Orchestrator</h2>
+
+                <div class="chat-container">
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="chat-message assistant">
+                            <div class="message-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="message-content">
+                                <p>Hello! I'm your testing assistant. I can help you:</p>
+                                <ul>
+                                    <li>Start testing workflows</li>
+                                    <li>Check workflow status</li>
+                                    <li>Review pending approvals</li>
+                                    <li>Answer questions about testing</li>
+                                </ul>
+                                <p>Type "help" to see available commands!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" placeholder="Type your message..." onkeypress="handleChatKeyPress(event)">
+                        <button class="btn btn-primary" onclick="sendChatMessage()">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback View -->
+            <div id="feedback-view" class="view">
+                <h2>Submit Feedback</h2>
+
+                <div class="card">
+                    <form id="feedback-form" onsubmit="submitFeedback(event)">
+                        <div class="form-group">
+                            <label for="feedback-item-id">Item ID</label>
+                            <input type="text" id="feedback-item-id" required placeholder="TEST-001">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="feedback-item-type">Item Type</label>
+                            <select id="feedback-item-type">
+                                <option value="test_result">Test Result</option>
+                                <option value="test_case">Test Case</option>
+                                <option value="test_plan">Test Plan</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="feedback-rating">Rating (1-5)</label>
+                            <select id="feedback-rating">
+                                <option value="1">1 - Poor</option>
+                                <option value="2">2 - Fair</option>
+                                <option value="3" selected>3 - Good</option>
+                                <option value="4">4 - Very Good</option>
+                                <option value="5">5 - Excellent</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="feedback-comment">Comment</label>
+                            <textarea id="feedback-comment" rows="4" placeholder="Your feedback..."></textarea>
+                        </div>
+
+                        <div class="form-group-checkbox">
+                            <label>
+                                <input type="checkbox" id="feedback-false-positive">
+                                False Positive (test failed incorrectly)
+                            </label>
+                        </div>
+
+                        <div class="form-group-checkbox">
+                            <label>
+                                <input type="checkbox" id="feedback-known-issue">
+                                Known Issue
+                            </label>
+                        </div>
+
+                        <div class="form-group-checkbox">
+                            <label>
+                                <input type="checkbox" id="feedback-needs-investigation">
+                                Needs Investigation
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Submit Feedback
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Configuration View -->
+            <div id="config-view" class="view">
+                <h2>Configuration</h2>
+
+                <div class="config-grid">
+                    <div class="card">
+                        <h3>Framework Settings</h3>
+                        <div id="framework-settings" class="settings-list">
+                            <!-- Settings loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Application Profiles</h3>
+                        <div id="app-profiles" class="profiles-list">
+                            <!-- Profiles loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+
+    <!-- Load JavaScript -->
+    <script src="js/app.js"></script>
+    <script src="js/components/dashboard.js"></script>
+    <script src="js/components/approval-panel.js"></script>
+    <script src="js/components/workflow-monitor.js"></script>
+    <script src="js/components/chat-interface.js"></script>
+    <script src="js/components/feedback-form.js"></script>
+    <script src="js/components/config-manager.js"></script>
+</body>
+</html>

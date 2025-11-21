@@ -1,0 +1,155 @@
+# Application Profiles Configuration
+# Define different application profiles for regression testing
+
+applications:
+  # Generic Web Application Example
+  web_portal:
+    name: "web_portal"
+    app_type: "web"
+    adapter: "web_adapter"
+    base_url: "https://portal.example.com"
+    description: "Generic web portal application"
+
+    auth:
+      auth_type: "basic"
+      credentials_env: "WEB_PORTAL_CREDS"
+      username: "${APP_USERNAME}"
+      password: "${APP_PASSWORD}"
+
+    discovery:
+      enabled: true
+      url: "https://portal.example.com"
+      discover_elements: ["buttons", "forms", "links", "inputs", "navigation"]
+      discover_apis: false
+      max_depth: 3
+      max_pages: 50
+      exclude_patterns: ["/logout", "/admin", "/settings"]
+
+    test_framework: "playwright"
+    parallel_execution: true
+    max_workers: 4
+    headless: true
+
+    modules: ["authentication", "dashboard", "profile", "reports"]
+    features: ["login", "logout", "user_management"]
+
+    custom_config:
+      wait_timeout: 30
+      screenshot_dir: "screenshots/web_portal"
+
+  # Oracle EBS Example
+  oracle_ebs:
+    name: "oracle_ebs"
+    app_type: "enterprise"
+    adapter: "oracle_ebs_adapter"
+    base_url: "https://ebs.example.com:8000"
+    description: "Oracle E-Business Suite application"
+
+    auth:
+      auth_type: "custom"
+      credentials_env: "ORACLE_EBS_CREDS"
+      username: "${ORACLE_EBS_USER}"
+      password: "${ORACLE_EBS_PASSWORD}"
+
+    discovery:
+      enabled: true
+      url: "https://ebs.example.com:8000"
+      connection_string: "${ORACLE_CONNECTION_STRING}"
+      discover_elements: ["forms", "lov", "buttons", "tabs"]
+      discover_schema: true
+      max_depth: 2
+      max_pages: 100
+
+    test_framework: "selenium"
+    parallel_execution: false  # Oracle EBS typically requires sequential
+    max_workers: 1
+    headless: false
+
+    modules: ["GL", "AP", "AR", "PO", "INV"]
+
+    custom_config:
+      responsibility: "System Administrator"
+      wait_for_forms: true
+      implicit_wait: 10
+      page_load_timeout: 60
+
+  # REST API Example
+  api_service:
+    name: "api_service"
+    app_type: "api"
+    adapter: "api_adapter"
+    base_url: "https://api.example.com/v1"
+    description: "RESTful API service"
+
+    auth:
+      auth_type: "bearer"
+      credentials_env: "API_TOKEN"
+      token: "${API_BEARER_TOKEN}"
+      custom_headers:
+        X-API-Version: "1.0"
+        Content-Type: "application/json"
+
+    discovery:
+      enabled: true
+      openapi_spec: "https://api.example.com/v1/openapi.json"
+      discover_apis: true
+      discover_elements: []
+      discover_schema: false
+
+    test_framework: "pytest"
+    parallel_execution: true
+    max_workers: 10
+
+    features: ["authentication", "users", "products", "orders"]
+
+    custom_config:
+      timeout: 30
+      retry_attempts: 3
+      rate_limit: 100
+
+  # Custom Application Template
+  custom_app:
+    name: "custom_app"
+    app_type: "custom"
+    adapter: "custom_adapter"
+    base_url: "https://custom.example.com"
+    description: "Template for custom application"
+
+    auth:
+      auth_type: "oauth2"
+      credentials_env: "CUSTOM_APP_OAUTH"
+      oauth_config:
+        client_id: "${OAUTH_CLIENT_ID}"
+        client_secret: "${OAUTH_CLIENT_SECRET}"
+        auth_url: "https://auth.example.com/oauth/token"
+        scope: "read write"
+
+    discovery:
+      enabled: true
+      url: "https://custom.example.com"
+      discover_elements: ["all"]
+      max_depth: 5
+      include_patterns: ["/app/*"]
+      exclude_patterns: ["/static/*", "/assets/*"]
+
+    test_framework: "playwright"
+    parallel_execution: true
+    max_workers: 4
+    headless: true
+
+    custom_config:
+      custom_setting_1: "value1"
+      custom_setting_2: "value2"
+
+# Default profile to use if none specified
+default_profile: "web_portal"
+
+# Global settings that apply to all profiles
+global_settings:
+  screenshot_on_failure: true
+  video_on_failure: false
+  retry_failed_tests: 1
+  test_timeout: 300
+  browser_options:
+    - "--no-sandbox"
+    - "--disable-dev-shm-usage"

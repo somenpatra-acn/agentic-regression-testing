@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(clear)",
+      "Bash(python -m pytest:*)",
+      "Bash(pip install:*)",
+      "Bash(python -c:*)",
+      "Bash(python:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(curl:*)",
+      "Bash(set PYTHONPATH=%CD%)",
+      "Bash(ping:*)",
+      "Bash(nul)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

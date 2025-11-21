@@ -1,0 +1,62 @@
+# Core LangChain
+langchain>=0.1.20
+langchain-openai>=0.1.0
+langchain-community>=0.0.38
+langchain-core>=0.1.45
+langgraph>=0.0.40
+
+# Vector Stores
+faiss-cpu>=1.7.4
+chromadb>=0.4.22
+tiktoken>=0.5.2
+
+# Testing Frameworks
+selenium>=4.15.0
+playwright>=1.40.0
+pytest>=7.4.3
+pytest-html>=4.1.1
+pytest-xdist>=3.5.0
+robotframework>=6.1.1
+
+# Database Support
+cx_Oracle>=8.3.0
+sqlalchemy>=2.0.23
+pymongo>=4.6.1
+psycopg2-binary>=2.9.9
+
+# API Tools
+requests>=2.31.0
+httpx>=0.25.2
+openapi-spec-validator>=0.7.1
+beautifulsoup4>=4.12.2
+
+# CI/CD Integration
+azure-devops>=7.1.0b4
+PyGithub>=2.1.1
+python-jenkins>=1.8.2
+
+# HITL Interface
+click>=8.1.7
+prompt-toolkit>=3.0.43
+rich>=13.7.0
+flask>=3.0.0
+flask-cors>=4.0.0
+flask-sock>=0.7.0
+
+# Utilities
+python-dotenv>=1.0.0
+pydantic>=2.5.3
+pydantic-settings>=2.1.0
+pyyaml>=6.0.1
+tenacity>=8.2.3
+
+# AI/ML
+openai>=1.7.0
+anthropic>=0.8.1
+
+# Logging and Monitoring
+loguru>=0.7.2
+
+# Data Processing
+pandas>=2.1.4
+numpy>=1.26.2
