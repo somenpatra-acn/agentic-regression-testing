@@ -11,7 +11,8 @@
       "Bash(curl:*)",
       "Bash(set PYTHONPATH=%CD%)",
       "Bash(ping:*)",
-      "Bash(nul)"
+      "Bash(nul)",
+      "Bash(playwright install:*)"
     ],
     "deny": [],
     "ask": []

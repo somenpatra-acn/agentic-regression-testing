@@ -18,6 +18,7 @@ class DiscoveryState(TypedDict, total=False):
     # Input
     app_profile: Any  # ApplicationProfile object
     discovery_params: Dict[str, Any]  # Optional override parameters
+    discovery_type: Optional[str]  # Type of discovery: "web", "api", "database"
 
     # Discovery results
     discovery_result: Optional[Dict[str, Any]]  # Raw discovery result

@@ -8,8 +8,11 @@ from adapters.oracle_ebs_adapter import OracleEBSAdapter
 # Adapter registry
 ADAPTER_REGISTRY = {
     "web_adapter": WebAdapter,
+    "web": WebAdapter,  # Alias for backwards compatibility
     "api_adapter": APIAdapter,
+    "api": APIAdapter,  # Alias for backwards compatibility
     "oracle_ebs_adapter": OracleEBSAdapter,
+    "oracle_ebs": OracleEBSAdapter,  # Alias for backwards compatibility
 }
 
 

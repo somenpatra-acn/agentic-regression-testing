@@ -96,7 +96,7 @@ class WebDiscoveryTool(BaseTool):
         # Get web adapter
         adapter = None
         try:
-            adapter = get_adapter(app_profile)
+            adapter = get_adapter(app_profile.adapter, app_profile)
 
             # Ensure discovery is enabled
             if not app_profile.discovery.enabled:

@@ -205,9 +205,17 @@ class OrchestratorAgentV2:
 
         try:
             # Run discovery agent
+            # Get discovery parameters and unpack them
+            discovery_params = state.get("discovery_params", {})
+
+            # Extract URL from app profile if not in params
+            url = discovery_params.get("url") or state["app_profile"].base_url
+
             discovery_state = self.discovery_agent.discover(
-                app_profile=state["app_profile"],
-                discovery_params=state.get("discovery_params", {}),
+                url=url,
+                max_depth=discovery_params.get("max_depth"),
+                max_pages=discovery_params.get("max_pages"),
+                **{k: v for k, v in discovery_params.items() if k not in ["url", "max_depth", "max_pages"]}
             )
 
             # Store discovery state
@@ -243,7 +251,6 @@ class OrchestratorAgentV2:
 
             # Run test planner
             planning_state = self.test_planner.create_plan(
-                app_profile=state["app_profile"],
                 feature_description=state.get("feature_description", "Complete regression test suite"),
                 discovery_result=discovery_result,
             )
