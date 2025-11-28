@@ -17,7 +17,8 @@
       "Bash(taskkill:*)",
       "Bash(cmd.exe /c \"taskkill /PID 32012 /F\")",
       "Bash(powershell -Command \"Stop-Process -Id 32012 -Force\")",
-      "Bash(timeout /t 3)"
+      "Bash(timeout /t 3)",
+      "Bash(pytest:*)"
     ],
     "deny": [],
     "ask": []

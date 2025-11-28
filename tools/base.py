@@ -132,9 +132,12 @@ class BaseTool(ABC):
             result = func(**kwargs)
             execution_time = time.time() - start_time
 
-            # If function returns ToolResult, update execution time
+            # If function returns ToolResult, update execution time and merge metadata
             if isinstance(result, ToolResult):
                 result.execution_time = execution_time
+                # Merge tool name into metadata if not already present
+                if "tool" not in result.metadata:
+                    result.metadata["tool"] = self.metadata.name
                 return result
 
             # If function returns data directly, wrap in ToolResult
@@ -304,6 +307,7 @@ class ToolRegistry:
             "output_dir": ".",
             "knowledge_base_dir": ".",
             "app_profile": dummy_app_profile,
+            "required_param": "dummy_value",  # For tools with custom required params
         }
 
         for tool_class in cls._tools.values():
