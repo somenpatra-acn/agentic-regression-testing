@@ -12,7 +12,12 @@
       "Bash(set PYTHONPATH=%CD%)",
       "Bash(ping:*)",
       "Bash(nul)",
-      "Bash(playwright install:*)"
+      "Bash(playwright install:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)",
+      "Bash(cmd.exe /c \"taskkill /PID 32012 /F\")",
+      "Bash(powershell -Command \"Stop-Process -Id 32012 -Force\")",
+      "Bash(timeout /t 3)"
     ],
     "deny": [],
     "ask": []

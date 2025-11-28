@@ -86,22 +86,25 @@ class LLMConfig:
         return self.get_llm()
 
 
-@lru_cache()
 def get_llm(provider: Optional[str] = None, model: Optional[str] = None) -> BaseChatModel:
-    """Get cached LLM instance."""
+    """Get LLM instance."""
     config = LLMConfig(provider, model)
     return config.get_llm()
 
 
-@lru_cache()
-def get_fast_llm() -> BaseChatModel:
-    """Get cached fast LLM instance."""
-    config = LLMConfig()
+def get_fast_llm(provider: Optional[str] = None) -> BaseChatModel:
+    """Get fast LLM instance."""
+    config = LLMConfig(provider=provider)
     return config.get_fast_llm()
 
 
-@lru_cache()
-def get_smart_llm() -> BaseChatModel:
-    """Get cached smart LLM instance."""
-    config = LLMConfig()
+def get_smart_llm(provider: Optional[str] = None) -> BaseChatModel:
+    """Get smart LLM instance."""
+    config = LLMConfig(provider=provider)
     return config.get_smart_llm()
+
+
+def get_llm_provider() -> str:
+    """Get the configured LLM provider."""
+    settings = get_settings()
+    return settings.llm_provider
