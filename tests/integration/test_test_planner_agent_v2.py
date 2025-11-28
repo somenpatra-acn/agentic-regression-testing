@@ -10,7 +10,7 @@ from agents_v2.test_planner_agent_v2 import TestPlannerAgentV2
 from tools.base import ToolRegistry
 from tools.validation.input_sanitizer import InputSanitizerTool
 from tools.rag.vector_search import VectorSearchTool
-from tools.rag.test_pattern_retriever import TestPatternRetrieverTool
+from tools.rag.pattern_retriever import TestPatternRetrieverTool
 from tools.planning.test_plan_generator import TestPlanGeneratorTool
 from tools.planning.test_case_extractor import TestCaseExtractorTool
 
@@ -33,7 +33,7 @@ class TestTestPlannerAgentV2Integration:
 
     @patch('tools.planning.test_plan_generator.get_smart_llm')
     @patch('tools.rag.vector_search.TestKnowledgeRetriever')
-    @patch('tools.rag.test_pattern_retriever.TestKnowledgeRetriever')
+    @patch('tools.rag.pattern_retriever.TestKnowledgeRetriever')
     def test_complete_planning_workflow(
         self,
         mock_pattern_retriever,
@@ -138,7 +138,7 @@ Comprehensive authentication testing
 
     @patch('tools.planning.test_plan_generator.get_smart_llm')
     @patch('tools.rag.vector_search.TestKnowledgeRetriever')
-    @patch('tools.rag.test_pattern_retriever.TestKnowledgeRetriever')
+    @patch('tools.rag.pattern_retriever.TestKnowledgeRetriever')
     def test_planning_with_discovery_results(
         self,
         mock_pattern_retriever,
@@ -179,7 +179,7 @@ Comprehensive authentication testing
 
     @patch('tools.planning.test_plan_generator.get_smart_llm')
     @patch('tools.rag.vector_search.TestKnowledgeRetriever')
-    @patch('tools.rag.test_pattern_retriever.TestKnowledgeRetriever')
+    @patch('tools.rag.pattern_retriever.TestKnowledgeRetriever')
     def test_input_validation_in_workflow(
         self,
         mock_pattern_retriever,
@@ -271,7 +271,7 @@ Comprehensive authentication testing
 
     @patch('tools.planning.test_plan_generator.get_smart_llm')
     @patch('tools.rag.vector_search.TestKnowledgeRetriever')
-    @patch('tools.rag.test_pattern_retriever.TestKnowledgeRetriever')
+    @patch('tools.rag.pattern_retriever.TestKnowledgeRetriever')
     def test_execution_timing(
         self,
         mock_pattern_retriever,
@@ -311,7 +311,7 @@ Comprehensive authentication testing
 
     @patch('tools.planning.test_plan_generator.get_smart_llm')
     @patch('tools.rag.vector_search.TestKnowledgeRetriever')
-    @patch('tools.rag.test_pattern_retriever.TestKnowledgeRetriever')
+    @patch('tools.rag.pattern_retriever.TestKnowledgeRetriever')
     def test_state_tracking_through_workflow(
         self,
         mock_pattern_retriever,
@@ -372,7 +372,7 @@ class TestTestPlannerAgentV2Performance:
 
     @patch('tools.planning.test_plan_generator.get_smart_llm')
     @patch('tools.rag.vector_search.TestKnowledgeRetriever')
-    @patch('tools.rag.test_pattern_retriever.TestKnowledgeRetriever')
+    @patch('tools.rag.pattern_retriever.TestKnowledgeRetriever')
     def test_planning_completes_in_reasonable_time(
         self,
         mock_pattern_retriever,

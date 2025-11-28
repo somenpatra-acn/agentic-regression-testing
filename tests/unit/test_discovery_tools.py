@@ -115,7 +115,7 @@ class TestWebDiscoveryTool:
         assert "Missing dependency" in result.error
         assert "Playwright" in result.metadata.get("suggestion", "")
 
-    @patch('tools.discovery.web_adapter.get_adapter')
+    @patch('tools.discovery.web_discovery.get_adapter')
     def test_discovery_exception(self, mock_get_adapter, web_tool):
         """Test handling discovery exceptions"""
         mock_get_adapter.side_effect = Exception("Connection timeout")

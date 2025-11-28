@@ -122,7 +122,7 @@ class PathValidatorTool(BaseTool):
             # Convert to Path object for safer manipulation
             path_obj = Path(path)
 
-            # Check for path traversal (on original input)
+            # Check for path traversal (on original input) BEFORE any file system access
             if check_traversal:
                 for pattern in self.TRAVERSAL_PATTERNS:
                     if re.search(pattern, path, re.IGNORECASE):
@@ -132,6 +132,19 @@ class PathValidatorTool(BaseTool):
                             metadata={"pattern": pattern, "original_path": original_path}
                         )
 
+            # Check forbidden patterns on original path BEFORE any file system access
+            # This prevents attempting to access sensitive files we should never touch
+            if check_forbidden:
+                normalized_original = original_path.replace("\\", "/")
+                for pattern in self.FORBIDDEN_PATTERNS:
+                    if re.search(pattern, normalized_original, re.IGNORECASE):
+                        return ToolResult(
+                            status=ToolStatus.FAILURE,
+                            error=f"Forbidden path pattern detected: '{pattern}'",
+                            metadata={"pattern": pattern, "original_path": original_path}
+                        )
+
+            # Now safe to access file system for further checks
             # Check for symlinks BEFORE resolving (since resolve() follows symlinks)
             if self.base_dir:
                 base = Path(self.base_dir)
@@ -139,15 +152,20 @@ class PathValidatorTool(BaseTool):
             else:
                 unresolved_path = path_obj
 
-            is_symlink = unresolved_path.exists() and unresolved_path.is_symlink()
-            if is_symlink and not self.allow_symlinks:
-                warnings.append("Path is a symlink")
-                if self.strict_mode:
-                    return ToolResult(
-                        status=ToolStatus.FAILURE,
-                        error="Symlinks are not allowed in strict mode",
-                        metadata={"original_path": original_path}
-                    )
+            # Only check symlink if path exists (to avoid permission errors)
+            try:
+                is_symlink = unresolved_path.exists() and unresolved_path.is_symlink()
+                if is_symlink and not self.allow_symlinks:
+                    warnings.append("Path is a symlink")
+                    if self.strict_mode:
+                        return ToolResult(
+                            status=ToolStatus.FAILURE,
+                            error="Symlinks are not allowed in strict mode",
+                            metadata={"original_path": original_path}
+                        )
+            except (OSError, PermissionError):
+                # If we can't check, treat as if it doesn't exist
+                pass
 
             # Resolve to absolute path
             try:
@@ -159,19 +177,8 @@ class PathValidatorTool(BaseTool):
                     metadata={"original_path": original_path}
                 )
 
-            # Check forbidden patterns (check both original and resolved paths)
+            # Check forbidden patterns on resolved path (to catch .env and relative paths after resolution)
             if check_forbidden:
-                # Check original path (to catch Unix paths like /etc/passwd even on Windows)
-                normalized_original = original_path.replace("\\", "/")
-                for pattern in self.FORBIDDEN_PATTERNS:
-                    if re.search(pattern, normalized_original, re.IGNORECASE):
-                        return ToolResult(
-                            status=ToolStatus.FAILURE,
-                            error=f"Forbidden path pattern detected: '{pattern}'",
-                            metadata={"pattern": pattern, "original_path": original_path}
-                        )
-
-                # Check resolved path (to catch .env and relative paths after resolution)
                 normalized_resolved = str(abs_path).replace("\\", "/")
                 for pattern in self.FORBIDDEN_PATTERNS:
                     if re.search(pattern, normalized_resolved, re.IGNORECASE):

@@ -206,28 +206,31 @@ class ToolRegistry:
         if not issubclass(tool_class, BaseTool):
             raise ValueError(f"{tool_class.__name__} must inherit from BaseTool")
 
+        # Prepare dummy config in case tool requires configuration
+        # Import ApplicationProfile here to avoid circular imports
+        from models.app_profile import ApplicationProfile, ApplicationType, TestFramework
+        import logging
+
+        dummy_app_profile = ApplicationProfile(
+            name="dummy",
+            app_type=ApplicationType.WEB,
+            adapter="web",
+            test_framework=TestFramework.PLAYWRIGHT,
+        )
+
+        dummy_config = {
+            "output_dir": ".",  # For tools that need output_dir
+            "knowledge_base_dir": ".",  # For tools that need knowledge_base_dir
+            "app_profile": dummy_app_profile,  # For tools that need app_profile
+            "required_param": "dummy_value",  # For tools with custom required params
+        }
+
         # Create temporary instance to get metadata
         # Try without config first, then with minimal dummy config if needed
         try:
             temp_instance = tool_class()
         except (ValueError, TypeError):
             # Tool requires config, use minimal dummy config for registration
-            # Import ApplicationProfile here to avoid circular imports
-            from models.app_profile import ApplicationProfile, ApplicationType, TestFramework
-
-            dummy_app_profile = ApplicationProfile(
-                name="dummy",
-                app_type=ApplicationType.WEB,
-                adapter="web",
-                test_framework=TestFramework.PLAYWRIGHT,
-            )
-
-            dummy_config = {
-                "output_dir": ".",  # For tools that need output_dir
-                "knowledge_base_dir": ".",  # For tools that need knowledge_base_dir
-                "app_profile": dummy_app_profile,  # For tools that need app_profile
-                "required_param": "dummy_value",  # For tools with custom required params
-            }
             try:
                 temp_instance = tool_class(config=dummy_config)
             except Exception as e:
@@ -245,7 +248,7 @@ class ToolRegistry:
                 existing_instance = cls._tools[tool_name](config=dummy_config)
             existing_version = existing_instance.metadata.version
             new_version = temp_instance.metadata.version
-            print(f"Warning: Overwriting tool '{tool_name}' (v{existing_version} -> v{new_version})")
+            logging.warning(f"Overwriting tool '{tool_name}' (v{existing_version} -> v{new_version})")
 
         cls._tools[tool_name] = tool_class
 
@@ -277,7 +280,29 @@ class ToolRegistry:
         if tool_name not in cls._tools:
             raise ValueError(f"Tool '{tool_name}' not found")
 
-        temp_instance = cls._tools[tool_name]()
+        # Import ApplicationProfile here to avoid circular imports
+        from models.app_profile import ApplicationProfile, ApplicationType, TestFramework
+
+        dummy_app_profile = ApplicationProfile(
+            name="dummy",
+            app_type=ApplicationType.WEB,
+            adapter="web",
+            test_framework=TestFramework.PLAYWRIGHT,
+        )
+
+        dummy_config = {
+            "output_dir": ".",
+            "knowledge_base_dir": ".",
+            "app_profile": dummy_app_profile,
+            "required_param": "dummy_value",
+        }
+
+        # Try to create instance without config first, then with dummy config
+        try:
+            temp_instance = cls._tools[tool_name]()
+        except (ValueError, TypeError):
+            temp_instance = cls._tools[tool_name](config=dummy_config)
+
         return temp_instance.metadata
 
     @classmethod

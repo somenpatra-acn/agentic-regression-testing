@@ -7,7 +7,7 @@ Tests VectorSearchTool and TestPatternRetrieverTool with mocked retriever.
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 from tools.rag.vector_search import VectorSearchTool
-from tools.rag.test_pattern_retriever import TestPatternRetrieverTool
+from tools.rag.pattern_retriever import TestPatternRetrieverTool
 from tools.base import ToolStatus, ToolRegistry
 
 
@@ -134,7 +134,7 @@ class TestTestPatternRetrieverTool:
         assert "patterns" in metadata.tags
         assert metadata.is_safe is True
 
-    @patch('tools.rag.test_pattern_retriever.TestKnowledgeRetriever')
+    @patch('tools.rag.pattern_retriever.TestKnowledgeRetriever')
     def test_retrieve_feature_patterns(self, mock_retriever_class, pattern_tool):
         """Test retrieving feature patterns"""
         mock_retriever = Mock()
@@ -155,9 +155,9 @@ class TestTestPatternRetrieverTool:
         assert result.data["count"] == 3
         assert result.data["pattern_type"] == "feature"
         assert len(result.data["patterns"]) == 3
-        assert mock_retriever.get_test_patterns.called_with(feature="login", k=3)
+        mock_retriever.get_test_patterns.assert_called_with(feature="login", k=3)
 
-    @patch('tools.rag.test_pattern_retriever.TestKnowledgeRetriever')
+    @patch('tools.rag.pattern_retriever.TestKnowledgeRetriever')
     def test_retrieve_failure_patterns(self, mock_retriever_class, pattern_tool):
         """Test retrieving failure insights"""
         mock_retriever = Mock()
@@ -228,7 +228,7 @@ class TestTestPatternRetrieverTool:
         )
         assert result.is_failure()
 
-    @patch('tools.rag.test_pattern_retriever.TestKnowledgeRetriever')
+    @patch('tools.rag.pattern_retriever.TestKnowledgeRetriever')
     def test_similar_pattern_retrieval(self, mock_retriever_class, pattern_tool):
         """Test retrieving similar test patterns"""
         mock_retriever = Mock()
